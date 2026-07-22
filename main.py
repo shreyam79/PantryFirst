@@ -36,21 +36,40 @@ def get_ingredients(recipe_id):
 
     for ingredient in ingredients:
         name = ingredient['name']
-        amount = ingredient['measures']['us']['amount']
-        unit = ingredient['measures']['us']['unitShort']
+        amount = ingredient['measures']['metric']['amount']
+        unit = ingredient['measures']['metric']['unitShort']
         ingredientsList.append((name, amount, unit))
     return ingredientsList
 
-def main():
-    query = input('What do you want to cook? ')
-    results = search_recipes(query)
+def buildWeeklyTotals(cart):
+    weekly_total = {}
+    for recipe in cart:
+        ingredients = get_ingredients(recipe['id'])
+        for name, amount, unit in ingredients:
+            name = name.lower().strip()
+            if name in weekly_total:
+                weekly_total[name]['amount'] += amount
+            else:
+                weekly_total[name] = {'amount': amount, 'unit': unit}
+    return weekly_total
 
-    for i, result in enumerate(results):
-        print(i+1, result['title'])
-    
-    choice = int(input('Which one would you like to cook? '))
-    chosen_recipe = results[choice-1]
-    recipe_id = chosen_recipe['id']
-    print(get_ingredients(recipe_id))
+def main():
+    cart = []
+    while True:
+        query = input('What do you want to cook? ')
+        results = search_recipes(query)
+
+        for i, result in enumerate(results):
+            print(i+1, result['title'])
+        
+        choice = int(input('Which one would you like to cook? '))
+        chosen_recipe = results[choice-1]
+        cart.append(chosen_recipe)
+
+        again = input('Add another recipe? (y/n) ')
+        if (again.lower() != 'y'):
+            break
+
+    print(buildWeeklyTotals(cart))
 
 main()
