@@ -16,18 +16,24 @@ def get_price_for_ingredient(name):
     pack_options = []
 
     while True:
-        size_input = input("Enter pack size (e.g. '2.5 oz', or 'n' if done)")
+        size_input = input("Enter pack size (e.g. '2.5 oz', or 'n' if done): ")
         if size_input.lower() == 'n':
             break
 
-        amount = size_input.split[0]
-        unit = size_input.split[1]
+        x = size_input.split()
+        amount = x[0]
+        if len(x) != 1:
+            unit = x[1]
+        else:
+            unit = 'items'
 
         price_input = float(input('Price for that pack: '))
 
         pack_options.append({
-            'amount': amount
-            'unit': unit
+            'amount': amount,
+            'unit': unit,
             'price': price_input
         })
-    return pack_options
+    print(pack_options)
+
+get_price_for_ingredient('avocado')
