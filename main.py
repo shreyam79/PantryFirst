@@ -1,6 +1,7 @@
 import requests
 from dotenv import load_dotenv
 import os
+from pantry import load_price_list, get_price_for_ingredient, save_price_list, build_weekly_totals
 
 load_dotenv()
 api_key = os.getenv("SPOONACULAR_KEY")
@@ -54,6 +55,7 @@ def buildWeeklyTotals(cart):
     return weekly_total
 
 def main():
+    price_list = load_price_list()
     cart = []
     while True:
         query = input('What do you want to cook? ')
@@ -70,6 +72,12 @@ def main():
         if (again.lower() != 'y'):
             break
 
-    print(buildWeeklyTotals(cart))
+    weekly_totals = buildWeeklyTotals(cart)
+
+    for ingredient in weekly_totals:
+        if ingredient not in price_list:
+            price_list = get_price_for_ingredient(ingredient, price_list)
+
+    save_price_list(price_list)
 
 main()

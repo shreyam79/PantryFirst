@@ -1,17 +1,13 @@
-weekly_totals = {}
+import json
 
-egg_pack_sizes = [6, 12]
-egg_pack_price = {6: 1.09, 12: 1.69}
+def load_price_list():
+    try:
+        with open('price_list.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
 
-def buy_and_use(item, needed, pantry, pack_sizes, prices):
-    # check how much is already in pantry for this item
-    # if enough, use it, cost = 0, update pantry
-    # if not enough, figure out how much more is needed,
-        # buy the smallest pack that covers that gap,
-        # add cost, update pantry with new leftovers
-    pass
-
-def get_price_for_ingredient(name):
+def get_price_for_ingredient(name, price_list):
     print(f'No price on file for {name}')
     pack_options = []
 
@@ -21,7 +17,7 @@ def get_price_for_ingredient(name):
             break
 
         x = size_input.split()
-        amount = x[0]
+        amount = float(x[0])
         if len(x) != 1:
             unit = x[1]
         else:
@@ -34,6 +30,13 @@ def get_price_for_ingredient(name):
             'unit': unit,
             'price': price_input
         })
-    print(pack_options)
 
-get_price_for_ingredient('avocado')
+    price_list[name] = pack_options
+    return price_list
+
+def save_price_list(price_list):
+    with open('price_list.json', 'w') as f:
+        json.dump(price_list, f)
+
+def build_weekly_totals():
+    pass
